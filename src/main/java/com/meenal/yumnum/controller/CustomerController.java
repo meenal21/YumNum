@@ -24,8 +24,13 @@ public class CustomerController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("email") String email){
-        return ResponseEntity.ok(customerService.getCustomer(email));
+    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("email") String email, @RequestHeader("Authorization") String token){
+        if(customerService.tokenValidate(token)){
+            CustomerResponse cust = customerService.getCustomer(email);
+            return ResponseEntity.ok(cust);
+        }
+        return ResponseEntity.notFound().build();
+
     }
 
     @PostMapping("/login")
